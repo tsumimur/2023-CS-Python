@@ -4,10 +4,13 @@ from typing import List, Optional, Union
 ops = {"+": add, "-": sub, "*": mul, "/": truediv}
 
 
-def prefix_evaluate(prefix_evaluation: List[str]) -> int: 
+def prefix_evaluate(prefix_evaluation: str) -> int: 
     stack = []
+
+    if prefix_evaluation == "":
+        return None
     
-    for token in reversed(prefix_evaluation):
+    for token in reversed(prefix_evaluation.split()):
         if token.isdigit():
             stack.append(int(token))
         else:
@@ -15,21 +18,14 @@ def prefix_evaluate(prefix_evaluation: List[str]) -> int:
                 op1 = stack.pop()
                 op2 = stack.pop()
 
-                if token == "+":
-                    result = add(op1, op2)
-                elif token == "-":
-                    result = sub(op1, op2)
-                elif token == "*":
-                    result = mul(op1, op2)
-                elif token == "/":
-                    result = div(op1, op2)
+                result = ops[token](op1, op2)
                 
                 stack.append(result)
 
     return stack[0]
 
 
-def to_prefix(equation: str) -> List[str]:
+def to_prefix(equation: str) -> str:
     precedence = {"+": 1, "-": 1, "*": 2, "/": 2}
     operators = set("+*-/")
     output = []
@@ -52,7 +48,7 @@ def to_prefix(equation: str) -> List[str]:
     while stack:
         output.append(stack.pop())
     
-    return list(reversed(output))
+    return " ".join(list(reversed(output)))
 
 
 def calculate(equation: str) -> int:
