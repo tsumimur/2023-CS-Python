@@ -4,39 +4,55 @@ from typing import List, Optional, Union
 ops = {"+": add, "-": sub, "*": mul, "/": truediv}
 
 
-def _split_if_string(string_or_list: Union[List[str], str]) -> List[str]:
-    return string_or_list.split() if isinstance(string_or_list, str) else string_or_list
-
-
-def prefix_evaluate(prefix_equation: Union[List[str], str]) -> Optional[int]:
-    if not prefix_equation:
-        return None
-    prefix_equation = _split_if_string(prefix_equation)
-    value_stack = []
-    while prefix_equation:
-        el = prefix_equation.pop()
-        if el not in ops:
-            value_stack.append(int(el))
+def prefix_evaluate(prefix_evaluation: List[str]) -> int: 
+    stack = []
+    
+    for token in reversed(prefix_evaluation):
+        if token.isdigit():
+            stack.append(int(token))
         else:
-            r_val = value_stack.pop()
-            l_val = value_stack.pop()
-            operation = ops[el]
-            value_stack.append(operation(r_val, l_val))
+            if token in "+-*/":
+                op1 = stack.pop()
+                op2 = stack.pop()
 
-    return value_stack[0]
+                if token == "+":
+                    result = add(op1, op2)
+                elif token == "-":
+                    result = sub(op1, op2)
+                elif token == "*":
+                    result = mul(op1, op2)
+                elif token == "/":
+                    result = div(op1, op2)
+                
+                stack.append(result)
+
+    return stack[0]
 
 
-def to_prefix(equation: str) -> str:
-    op_stack = []
-    prefix = []
+def to_prefix(equation: str) -> List[str]:
+    precedence = {"+": 1, "-": 1, "*": 2, "/": 2}
+    operators = set("+*-/")
+    output = []
+    stack = []
 
-    for el in equation.split()[::-1]:
-        pass
-
-    while op_stack:
-        prefix.append(op_stack.pop())
-
-    return " ".join(prefix[::-1])
+    for token in reversed(equation.split()):
+        if token.isdigit():
+            output.append(token)
+        elif token in operators:
+            while stack and stack[-1] != ")" and precedence[token] <= precedence.get(stack[-1], 0):
+                output.append(stack.pop())
+            stack.append(token)
+        elif token == ")":
+            stack.append(token)
+        elif token == "(":
+            while stack and stack[-1] != ")":
+                output.append(stack.pop())
+            stack.pop()
+    
+    while stack:
+        output.append(stack.pop())
+    
+    return list(reversed(output))
 
 
 def calculate(equation: str) -> int:
