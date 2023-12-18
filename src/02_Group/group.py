@@ -2,6 +2,7 @@ from datetime import date, datetime, timezone
 from typing import List
  
  
+ 
 class Person:
     """
     >>> person = Person('Ivan', 'Ivanov', 'male', date(1999, 8, 12))
@@ -45,6 +46,7 @@ class Person:
         return today.year - self.bday.year - ((today.month, today.day) < (self.bday.month, self.bday.day))
  
  
+
 class Student(Person):
     """
     >>> student = Student('Ivan', 'Ivanov', 'male', date(1999, 8, 12), 161, 9)
@@ -77,6 +79,7 @@ class Student(Person):
             self.skill == other.skill
         )
  
+
  
 class Group:
     """
