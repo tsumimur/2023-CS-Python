@@ -22,7 +22,7 @@ class TestSingleton:
         slist = [Singleton() for _ in range(size)]
 
         def rint():
-            return random.randrange(size)  # noqa: S311
+            return random.randrange(size)  #noqa: S311
 
         for lhs_idx, rhs_idx in [(rint(), rint()) for _ in range(size**2)]:
             assert_singleton(slist[lhs_idx], slist[rhs_idx])
